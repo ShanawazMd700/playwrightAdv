@@ -1,6 +1,5 @@
 name: Playwright CI
 
-# Controls when the workflow runs
 on:
   push:
     branches: [ "master" ]
@@ -13,11 +12,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout code
+      # Step 1: Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Step 2: Set up Node.js (adjust version as needed)
+      # Step 2: Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -25,6 +24,7 @@ jobs:
 
       # Step 3: Install dependencies
       - name: Install dependencies
+        working-directory: ./playwrightAdv
         run: npm install
 
       # Step 4: Install Playwright Browsers
@@ -34,6 +34,7 @@ jobs:
 
       # Step 5: Run Playwright tests
       - name: Run Playwright Tests
+        working-directory: ./playwrightAdv
         run: npx playwright test --reporter=line
 
       # Step 6: Upload Playwright test report (HTML)
@@ -42,4 +43,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
-          path: playwright-report
+          path: playwrightAdv/playwright-report
