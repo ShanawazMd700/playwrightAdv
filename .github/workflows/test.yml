@@ -1,4 +1,4 @@
-name: Playwright CI
+name: Playwright C# CI
 
 on:
   push:
@@ -16,36 +16,32 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Step 2: Setup Node.js
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      # Step 2: Setup .NET
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
         with:
-          node-version: '18'
+          dotnet-version: '8.0.x'
 
-      # Step 3: Show directory structure (for debugging)
-      - name: Show directory structure
-        run: |
-          pwd
-          ls -R
+      # Step 3: Restore dependencies
+      - name: Restore dependencies
+        run: dotnet restore
 
-      # Step 4: Installing dependencies
-      - name: Install dependencies
-        run: npm ci
-        
-      - name: Install Playwright globally
-        run: npm install -g playwright
-      # Step 5: Install Playwright Browsers
+      # Step 4: Build the project
+      - name: Build project
+        run: dotnet build --no-restore
+
+      # Step 5: Install Playwright browsers
       - name: Install Playwright browsers
-        run: playwright install --with-deps
+        run: pwsh bin/Debug/net8.0/playwright.ps1 install --with-deps
 
       # Step 6: Run Playwright tests
       - name: Run Playwright Tests
-        run: npx playwright test --reporter=line
+        run: dotnet test --no-build --logger "trx;LogFileName=TestResults.trx"
 
-      # Step 7: Upload Playwright test report (HTML)
-      - name: Upload Playwright HTML Report
+      # Step 7: Upload Playwright test report (TRX)
+      - name: Upload Test Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
-          path: playwright-report
+          name: playwright-test-report
+          path: "**/TestResults/*.trx"
