@@ -1,0 +1,44 @@
+name: Playwright CI
+
+# Controls when the workflow runs
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Node.js (adjust version as needed)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Step 4: Install Playwright Browsers
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      # Step 5: Run Playwright tests
+      - name: Run Playwright Tests
+        run: npx playwright test --reporter=line
+
+      # Step 6: Upload Playwright test report (HTML)
+      - name: Upload Playwright HTML Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report
