@@ -30,15 +30,21 @@ jobs:
       - name: Build project
         run: dotnet build --no-restore
 
-      # Step 5: Install Playwright browsers
+      # Step 5: Install Microsoft Edge
+      - name: Install Microsoft Edge
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y microsoft-edge-stable
+
+      # Step 6: Install Playwright browsers
       - name: Install Playwright browsers
         run: pwsh bin/Debug/net6.0/playwright.ps1 install --with-deps
 
-      # Step 6: Run Playwright tests
+      # Step 7: Run Playwright tests
       - name: Run Playwright Tests
         run: dotnet test --no-build --logger "trx;LogFileName=TestResults.trx"
 
-      # Step 7: Upload Playwright test report (TRX)
+      # Step 8: Upload Playwright test report (TRX)
       - name: Upload Test Report
         if: always()
         uses: actions/upload-artifact@v4
