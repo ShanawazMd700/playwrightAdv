@@ -12,39 +12,26 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      # Step 1: Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Step 2: Setup .NET
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '6.0.x'
 
-      # Step 3: Restore dependencies
       - name: Restore dependencies
         run: dotnet restore
 
-      # Step 4: Build the project
       - name: Build project
         run: dotnet build --no-restore
 
-      # Step 5: Install Microsoft Edge
-      - name: Install Microsoft Edge
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y microsoft-edge-stable
-
-      # Step 6: Install Playwright browsers
       - name: Install Playwright browsers
         run: pwsh bin/Debug/net6.0/playwright.ps1 install --with-deps
 
-      # Step 7: Run Playwright tests
       - name: Run Playwright Tests
         run: dotnet test --no-build --logger "trx;LogFileName=TestResults.trx"
 
-      # Step 8: Upload Playwright test report (TRX)
       - name: Upload Test Report
         if: always()
         uses: actions/upload-artifact@v4
