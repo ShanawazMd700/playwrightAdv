@@ -30,10 +30,6 @@ jobs:
       - name: Build project
         run: dotnet build --no-restore
 
-      #  Install system dependencies for Playwright
-      - name: Install Playwright dependencies
-        run: npx playwright install-deps  
-
       # Step 5: Install Playwright browsers
       - name: Install Playwright browsers
         run: pwsh bin/Debug/net6.0/playwright.ps1 install --with-deps
